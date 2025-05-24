@@ -3,8 +3,7 @@ import GoogleStrategy from "passport-google-oauth20";
 import { userModel } from "../models/userModel.js";
 import { generateAccessAndRefereshTokens } from "../controllers/userController.js";
 import express from "express";
-import "dotenv/config"
-
+import "dotenv/config";
 
 const googleRoute = express.Router();
 
@@ -87,41 +86,44 @@ googleRoute.get(
   }
 );
 
-
 googleRoute.get("/auth/logout", (req, res) => {
-    try {
-      // Clear the cookies
-      res.clearCookie("accessToken", {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production", // Only set secure flag in production
-        sameSite: "Strict" // Ensures cookies are sent only for same-site requests
-      });
-      res.clearCookie("refreshToken", {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production", // Only set secure flag in production
-        sameSite: "Strict" // Ensures cookies are sent only for same-site requests
-      });
-  
-      // If you're using express-session (Passport.js), clear the session
-      if (req.logout) {
-        req.logout((err) => {
-          if (err) {
-            console.error("Error during logout:", err);
-            return res.status(500).json({ success: false, message: "Logout failed" });
-          }
-  
-          return res.status(200).json({ success: true, message: "Logged out successfully" });
-        });
-      } else {
-        // In case req.logout() is not defined, just return a success message
-        res.status(200).json({ success: true, message: "Logged out successfully" });
-      }
-    } catch (error) {
-      console.error("Logout failed:", error);
-      res.status(500).json({ success: false, message: "Logout failed" });
-    }
-  });
-  
+  try {
+    // Clear the cookies
+    res.clearCookie("accessToken", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production", // Only set secure flag in production
+      sameSite: "Strict", // Ensures cookies are sent only for same-site requests
+    });
+    res.clearCookie("refreshToken", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production", // Only set secure flag in production
+      sameSite: "Strict", // Ensures cookies are sent only for same-site requests
+    });
 
+    // If you're using express-session (Passport.js), clear the session
+    if (req.logout) {
+      req.logout((err) => {
+        if (err) {
+          console.error("Error during logout:", err);
+          return res
+            .status(500)
+            .json({ success: false, message: "Logout failed" });
+        }
+
+        return res
+          .status(200)
+          .json({ success: true, message: "Logged out successfully" });
+      });
+    } else {
+      // In case req.logout() is not defined, just return a success message
+      res
+        .status(200)
+        .json({ success: true, message: "Logged out successfully" });
+    }
+  } catch (error) {
+    console.error("Logout failed:", error);
+    res.status(500).json({ success: false, message: "Logout failed" });
+  }
+});
 
 export default googleRoute;
